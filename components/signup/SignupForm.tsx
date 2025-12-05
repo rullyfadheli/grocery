@@ -29,11 +29,14 @@ function SignupForm(): JSX.Element {
     }
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:3001/api/register", {
-        headers: { "Content-Type": "application/json" },
-        method: "POST",
-        body: JSON.stringify({ username, email, mobile, password }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/register`,
+        {
+          headers: { "Content-Type": "application/json" },
+          method: "POST",
+          body: JSON.stringify({ username, email, mobile, password }),
+        }
+      );
       const data = await response.json();
       if (!response.ok) {
         setMessage(data[0].message || "Signup failed");

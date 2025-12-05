@@ -55,22 +55,28 @@ export function ProductCard({
       const token: string = localStorage.getItem("access_token") as string;
       console.log("localToken", token);
 
-      const response = await fetch(`http://localhost:3001/api/add-to-cart`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          product_id,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/add-to-cart`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            product_id,
+          }),
+        }
+      );
 
       if (!response.ok) {
-        const tokenResponse = await fetch(`http://localhost:3001/api/token`, {
-          method: "GET",
-          credentials: "include",
-        });
+        const tokenResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/token`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
 
         // console.log(tokenResponse);
 
@@ -87,7 +93,7 @@ export function ProductCard({
         );
 
         const newResponse = await fetch(
-          `http://localhost:3001/api/add-to-cart`,
+          `${process.env.NEXT_PUBLIC_API_URL}/add-to-cart`,
           {
             method: "POST",
             headers: {

@@ -28,7 +28,7 @@ function SearchPageComponent() {
 
       const fetchProducts = async () => {
         try {
-          const API_ENDPOINT = `http://localhost:3001/api/all-products/search?q=${currentQuery}`;
+          const API_ENDPOINT = `${process.env.NEXT_PUBLIC_API_URL}/all-products/search?q=${currentQuery}`;
           console.log(`Fetching from: ${API_ENDPOINT}`);
 
           const response = await fetch(API_ENDPOINT);

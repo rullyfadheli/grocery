@@ -11,7 +11,7 @@ import ErrorMessage from "@/components/utils/ErrorMessage";
 
 const getReviews = async (productId: string): Promise<false | Review[]> => {
   const res = await fetch(
-    `http://localhost:3001/api/reviews?productID=${productId}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/reviews?productID=${productId}`,
     {
       cache: "no-store",
     }
@@ -30,7 +30,9 @@ const getSimilarProducts = async (
   productID: string
 ): Promise<ProductCategory | false> => {
   const res = await fetch(
-    `http://localhost:3001/api/similar-product?category=${encodeURIComponent(
+    `${
+      process.env.NEXT_PUBLIC_API_URL
+    }/similar-product?category=${encodeURIComponent(
       category
     )}&productID=${productID}`,
     {

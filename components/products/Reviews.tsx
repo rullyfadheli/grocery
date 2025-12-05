@@ -43,7 +43,7 @@ export default function Reviews({
     async function getReviews(): Promise<void> {
       console.log(product_id);
       const res = await fetch(
-        `http://localhost:3001/api/reviews?productID=${product_id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/reviews?productID=${product_id}`,
         {
           cache: "no-store", // Hindari cache jika data dinamis
         }

@@ -50,7 +50,7 @@ export default function AddToCart({ price, product_id }: Props): JSX.Element {
 
       // Resend the request
       const retryResponse = await fetch(
-        "http://localhost:3001/api/add-to-cart",
+        `${process.env.NEXT_PUBLIC_API_URL}/add-to-cart`,
         {
           method: "POST",
           headers: {

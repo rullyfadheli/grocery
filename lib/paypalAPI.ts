@@ -2,6 +2,8 @@
 import type { OrderData } from "@/types/orders";
 import type { OrderResponse } from "@/types/orders";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
 class PaypalCheckout {
   public static async createOrder(
     token: string,
@@ -9,20 +11,17 @@ class PaypalCheckout {
     address_id: string
   ): Promise<OrderResponse | false> {
     try {
-      const response = await fetch(
-        "http://localhost:3001/api/paypal/create-order",
-        {
-          method: "POST",
-          headers: {
-            authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            coupon_code: couponCode,
-            address_id,
-          }),
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/paypal/create-order`, {
+        method: "POST",
+        headers: {
+          authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          coupon_code: couponCode,
+          address_id,
+        }),
+      });
 
       if (response.status !== 200) {
         return false;
@@ -43,7 +42,7 @@ class PaypalCheckout {
   ): Promise<OrderData | null> {
     try {
       const response = await fetch(
-        `http://localhost:3001/api/get-order-details?order_id=${order_id}`,
+        `${API_BASE_URL}/get-order-details?order_id=${order_id}`,
         {
           method: "GET",
           headers: {
@@ -73,17 +72,14 @@ class PaypalCheckout {
     order_id: string
   ): Promise<any | false> {
     try {
-      const response = await fetch(
-        "http://localhost:3001/api/paypal/capture-order",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ url: captureUrl, order_id }),
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/paypal/capture-order`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ url: captureUrl, order_id }),
+      });
 
       const result = await response.json();
       console.log(result);

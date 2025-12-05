@@ -13,7 +13,7 @@ import type {
 
 import type { Wishlist } from "@/types/wishlist";
 
-const API_BASE_URL = "http://localhost:3001/api";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 /**
  * ProductAPI class provides methods for interacting with product-related endpoints.
  * Handles product retrieval, wishlist management, authentication tokens, and cart operations.
@@ -38,7 +38,7 @@ class ProductAPI {
    */
   async getProductById(id: string): Promise<Product | string> {
     const response = await fetch(
-      `http://localhost:3001/api/product-by-id?productID=${id}`
+      `${API_BASE_URL}/product-by-id?productID=${id}`
     );
 
     const result: Product | ApiResponseMessage[] = await response.json();
@@ -67,7 +67,7 @@ class ProductAPI {
    */
   public async getWishList(token: string): Promise<false | Wishlist> {
     // console.log("token", token);
-    const response = await fetch(`http://localhost:3001/api/wishlist`, {
+    const response = await fetch(`${API_BASE_URL}/wishlist`, {
       method: "GET",
       headers: {
         authorization: `Bearer ${token}`,
@@ -88,7 +88,7 @@ class ProductAPI {
     token: string,
     product_id: string
   ): Promise<false | ApiResponseMessage[]> {
-    const response = await fetch("http://localhost:3001/api/add-to-wishlist", {
+    const response = await fetch(`${API_BASE_URL}/add-to-wishlist`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -122,7 +122,7 @@ class ProductAPI {
    */
   public async getRefreshToken(): Promise<false | Token> {
     try {
-      const response = await fetch("http://localhost:3001/api/token", {
+      const response = await fetch(`${API_BASE_URL}/token`, {
         method: "GET",
         credentials: "include",
       });
@@ -157,7 +157,7 @@ class ProductAPI {
    */
   public async getBestDeals(): Promise<Product[] | false> {
     try {
-      const response = await fetch("http://localhost:3001/api/best-deal", {
+      const response = await fetch(`${API_BASE_URL}/best-deal`, {
         method: "GET",
       });
 
@@ -189,7 +189,7 @@ class ProductAPI {
    * ```
    */
   public async getPopularProducts(): Promise<Product[] | false> {
-    const response = await fetch("http://localhost:3001/api/popular-products", {
+    const response = await fetch(`${API_BASE_URL}/popular-products`, {
       method: "GET",
     });
 
@@ -224,7 +224,7 @@ class ProductAPI {
     token: string,
     product_id: string
   ): Promise<string | boolean> {
-    const response = await fetch("http://localhost:3001/api/add-to-cart", {
+    const response = await fetch(`${API_BASE_URL}/add-to-cart`, {
       method: "POST",
       headers: {
         authorization: `Bearer ${token}`,
@@ -242,7 +242,7 @@ class ProductAPI {
   }
 
   public async getCartItems(token: string): Promise<Cart | false> {
-    const response = await fetch("http://localhost:3001/api/shopping-cart", {
+    const response = await fetch(`${API_BASE_URL}/shopping-cart`, {
       method: "GET",
       headers: {
         authorization: `Bearer ${token}`,
@@ -259,7 +259,7 @@ class ProductAPI {
   }
 
   public async getCoupons(token: string): Promise<Coupon | false> {
-    const response = await fetch("http://localhost:3001/api/coupons", {
+    const response = await fetch(`${API_BASE_URL}/coupons`, {
       method: "GET",
       headers: {
         authorization: `Bearer ${token}`,
@@ -280,7 +280,7 @@ class ProductAPI {
     token: string,
     product_id: string
   ): Promise<false | ApiResponseMessage> {
-    const response = await fetch("http://localhost:3001/api/delete-cart-item", {
+    const response = await fetch(`${API_BASE_URL}/delete-cart-item`, {
       method: "DELETE",
       headers: {
         authorization: `Bearer ${token}`,
@@ -356,7 +356,7 @@ class ProductAPI {
     payload: AddressPayload,
     token: string
   ): Promise<ServerResponse | null> {
-    const url = "http://localhost:3001/api/add-address";
+    const url = `${API_BASE_URL}/add-address`;
     console.log(payload);
 
     try {
@@ -402,7 +402,7 @@ class ProductAPI {
    * @returns A promise that resolves to an array of addresses, or null if an error occurs.
    */
   public async getUserAddress(token: string): Promise<Address[] | null> {
-    const url = "http://localhost:3001/api/address";
+    const url = `${API_BASE_URL}/address`;
 
     try {
       const response = await fetch(url, {
@@ -449,17 +449,14 @@ class ProductAPI {
     token: string,
     product_id: string
   ): Promise<ApiResponseMessage | false> {
-    const response = await fetch(
-      "http://localhost:3001/api/increase-cart-quantity",
-      {
-        method: "PUT",
-        headers: {
-          authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ product_id }),
-      }
-    );
+    const response = await fetch(`${API_BASE_URL}/increase-cart-quantity`, {
+      method: "PUT",
+      headers: {
+        authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ product_id }),
+    });
 
     const data = await response.json();
 
@@ -492,17 +489,14 @@ class ProductAPI {
     token: string,
     product_id: string
   ): Promise<ApiResponseMessage | false> {
-    const response = await fetch(
-      "http://localhost:3001/api/decrease-cart-quantity",
-      {
-        method: "PUT",
-        headers: {
-          authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ product_id }),
-      }
-    );
+    const response = await fetch(`${API_BASE_URL}/decrease-cart-quantity`, {
+      method: "PUT",
+      headers: {
+        authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ product_id }),
+    });
 
     const data = await response.json();
 
@@ -534,7 +528,7 @@ class ProductAPI {
    */
   public async login(email: string, password: string): Promise<Token | false> {
     try {
-      const response = await fetch("http://localhost:3001/api/login", {
+      const response = await fetch(`${API_BASE_URL}/login`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -566,17 +560,14 @@ class ProductAPI {
   ): Promise<boolean> {
     try {
       console.log(product_id);
-      const response = await fetch(
-        "http://localhost:3001/api/remove-from-wishlist",
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ product_id }),
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/remove-from-wishlist`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ product_id }),
+      });
 
       // if (response.status !== 200) {
       //     return false;

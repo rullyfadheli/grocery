@@ -14,7 +14,7 @@ export default function SocialLogin() {
   };
 
   const handleGoogleLogin = async () => {
-    router.push("http://localhost:3001/auth/google");
+    router.push(`${process.env.NEXT_PUBLIC_SOCKET_URL}/auth/google`);
   };
 
   return (

@@ -11,7 +11,7 @@ type Cursor = {
 
 // URL endpoint
 
-const URL_ENDPOINT = "http://localhost:3001";
+const URL_ENDPOINT = process.env.API_URL;
 
 /**
  * Fetches a paginated list of products from the external API using cursor-based pagination.
@@ -29,7 +29,7 @@ export async function fetchProducts(
 ): Promise<Product[]> {
   //   cursor: Cursor,
   //   limit: number = 10
-  const API_ENDPOINT = `${URL_ENDPOINT}/api/initial-products`;
+  const API_ENDPOINT = `${URL_ENDPOINT}/initial-products`;
   //   const params = new URLSearchParams({
   //     limit: String(limit),
   //   });
@@ -64,7 +64,7 @@ export async function fetchMoreProductsFromDB(
 ): Promise<Product[]> {
   //   cursor: Cursor,
   //   limit: number = 10
-  const API_ENDPOINT = `${URL_ENDPOINT}/api/more-products?serial=${serial}`;
+  const API_ENDPOINT = `${URL_ENDPOINT}/more-products?serial=${serial}`;
   //   const params = new URLSearchParams({
   //     limit: String(limit),
   //   });
@@ -95,7 +95,7 @@ export async function fetchProductByCategory(
   category: string
 ): Promise<ProductCategory | null> {
   const response = await fetch(
-    `${URL_ENDPOINT}/api/product-by-category?category=${category}`
+    `${URL_ENDPOINT}/product-by-category?category=${category}`
   );
   // if (response.status !== 200) {
   //   return null;
@@ -109,7 +109,7 @@ export async function fetchProductByCategory(
 export async function searchproduct(keyword: string): Promise<Product[]> {
   try {
     const response = await fetch(
-      `${URL_ENDPOINT}/api/search-product?keyword=${keyword}`
+      `${URL_ENDPOINT}/search-product?keyword=${keyword}`
     );
 
     if (response.status !== 200) {

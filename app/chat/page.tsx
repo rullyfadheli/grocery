@@ -29,7 +29,8 @@ import { useApiWithAuth } from "@/hooks/auth";
 
 const SOCKET_SERVER_URL =
   process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3001";
-const SERVER_URL: string = process.env.SERVER_URL || "http://localhost:3001";
+const SERVER_URL: string =
+  process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3001";
 
 /**
  * The main chat component that orchestrates the entire chat interface.

@@ -1,4 +1,4 @@
-const SERVER_URL = process.env.SERVER_URL || "http://localhost:3001";
+const SERVER_URL = process.env.NEXT_PUBLIC_SOCKET_URL;
 
 import type { Conversation } from "@/types/Message";
 

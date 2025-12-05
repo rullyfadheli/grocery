@@ -1,9 +1,11 @@
 // Types
 import type { Users } from "@/types/user";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
 class UserAPI {
   public static async getUserProfile(token: string): Promise<Users[] | null> {
-    const response = await fetch("http://localhost:3001/api/profile", {
+    const response = await fetch(`${API_BASE_URL}/profile`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -27,7 +29,7 @@ class UserAPI {
     mobile: string
   ): Promise<boolean> {
     try {
-      const response = await fetch("http://localhost:3001/api/edit-profile", {
+      const response = await fetch(`${API_BASE_URL}/edit-profile`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -59,7 +61,7 @@ class UserAPI {
     address_id: string
   ): Promise<boolean> {
     try {
-      const response = await fetch("http://localhost:3001/api/delete-address", {
+      const response = await fetch(`${API_BASE_URL}/delete-address`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -84,7 +86,7 @@ class UserAPI {
 
   public static async logout(token: string): Promise<boolean> {
     try {
-      const response = await fetch("http://localhost:3001/api/logout", {
+      const response = await fetch(`${API_BASE_URL}/logout`, {
         method: "PUT",
         credentials: "include",
         headers: {
@@ -111,16 +113,13 @@ class UserAPI {
     email: string
   ): Promise<string | false> {
     try {
-      const response = await fetch(
-        "http://localhost:3001/api/request-reset-password",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email }),
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/request-reset-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
 
       const data = await response.json();
       console.log(data);
@@ -137,7 +136,7 @@ class UserAPI {
     password: string
   ): Promise<string | false> {
     try {
-      const response = await fetch("http://localhost:3001/api/reset-password", {
+      const response = await fetch(`${API_BASE_URL}/reset-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

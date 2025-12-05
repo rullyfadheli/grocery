@@ -1,5 +1,6 @@
 // Endpoint Url
-const ENDPOINT_URL: string = "http://localhost:3001/";
+const ENDPOINT_URL: string =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 // Types
 import type { CompletedOrderItem, UpcomingOrderedItem } from "@/types/orders";
@@ -8,7 +9,7 @@ class OrderAPI {
     token: string
   ): Promise<CompletedOrderItem[] | false> {
     try {
-      const response = await fetch(`${ENDPOINT_URL}api/completed-orders`, {
+      const response = await fetch(`${ENDPOINT_URL}/completed-orders`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -33,7 +34,7 @@ class OrderAPI {
     token: string
   ): Promise<UpcomingOrderedItem[] | false> {
     try {
-      const response = await fetch(`${ENDPOINT_URL}api/upcoming-orders`, {
+      const response = await fetch(`${ENDPOINT_URL}/upcoming-orders`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -61,7 +62,7 @@ class OrderAPI {
     rating: number
   ): Promise<boolean> {
     try {
-      const response = await fetch(`${ENDPOINT_URL}api/submit-review`, {
+      const response = await fetch(`${ENDPOINT_URL}/submit-review`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
