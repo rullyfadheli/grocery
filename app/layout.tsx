@@ -1,4 +1,5 @@
 import { Inter } from "next/font/google";
+import { Toaster } from "sonner";
 import "./globals.css";
 import "leaflet/dist/leaflet.css";
 
@@ -16,9 +17,19 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body className={`${inter.className}`}>
         {/* <Providers>{children}</Providers> */}
         {children}
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            style: {
+              background: "var(--color-primary)",
+              color: "white",
+              padding: "16px",
+            },
+          }}
+        />
       </body>
     </html>
   );

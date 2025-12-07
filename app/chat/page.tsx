@@ -13,6 +13,7 @@ import ChatAPI from "@/lib/chatAPI";
 import ChatHeader from "@/components/chat/ChatHeader";
 import MessageBubble from "@/components/chat/MessageBubble";
 import MessageInput from "@/components/chat/MessageInput";
+import TypingIndicator from "@/components/chat/TypingIndicator";
 import Alert from "@/components/utils/Alert";
 
 // Types
@@ -46,6 +47,7 @@ const ChatPage = (): JSX.Element => {
   const apiWithauth = useApiWithAuth();
   const [alert, setAlert] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState<string>("");
+  const [isTyping, setIsTyping] = useState<boolean>(false);
 
   // Fetch the conversation at initial render
   useEffect(() => {
@@ -123,9 +125,30 @@ const ChatPage = (): JSX.Element => {
       token = newToken;
     });
 
+    // Chatbot sender ID from backend
+    const CHATBOT_SENDER_ID = "00000000-0000-0000-0000-000000000000";
+
     // Listen for incoming messages from the server
-    socketInstance.on("receiveMessage", (message: Chat) => {
-      setMessages((prevMessages) => [...prevMessages, message]);
+    socketInstance.on("receiveMessage", (message: any) => {
+      // Transform backend message format to frontend Chat format
+      const formattedMessage: Chat = {
+        id: message.id,
+        text: message.message || message.text,
+        sender: message.sender_id === CHATBOT_SENDER_ID ? "bot" : "admin",
+        timestamp: new Date(
+          message.created_at || Date.now()
+        ).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+        conversation_id:
+          message.conversation_id?.toString() || conversationID || "",
+      };
+      // Hide typing indicator when bot message is received
+      if (message.sender_id === CHATBOT_SENDER_ID) {
+        setIsTyping(false);
+      }
+      setMessages((prevMessages) => [...prevMessages, formattedMessage]);
     });
 
     // socketInstance.emit("joinConversation", conversationID);
@@ -135,7 +158,7 @@ const ChatPage = (): JSX.Element => {
       console.log("Disconnecting from socket server...");
       socketInstance.disconnect();
     };
-  }, [conversationID]);
+  }, [conversationID, setMessages]);
 
   // Effect for auto-scrolling to the latest message
   useEffect(() => {
@@ -169,6 +192,9 @@ const ChatPage = (): JSX.Element => {
     // Optimistically update the UI
     setMessages((prevMessages) => [...prevMessages, sendMessage]);
 
+    // Show typing indicator while waiting for bot response
+    setIsTyping(true);
+
     // Emit the message to the server
     socketRef.current?.emit("sendMessage", sendMessage, (err: ErrorSocket) => {
       if (err.status === "error") {
@@ -198,6 +224,7 @@ const ChatPage = (): JSX.Element => {
             {messages.map((msg, index) => (
               <MessageBubble key={index} message={msg} />
             ))}
+            {isTyping && <TypingIndicator />}
           </div>
           <MessageInput onSendMessage={handleSendMessage} />
         </div>
