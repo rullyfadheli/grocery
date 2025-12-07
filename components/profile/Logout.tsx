@@ -9,9 +9,6 @@ import Alert from "../utils/Alert";
 // API
 import UserAPI from "@/lib/userAPI";
 
-// Custom hook
-import { useApiWithAuth } from "@/hooks/auth";
-
 // Context store
 import { useWishlistStore } from "@/store/WishlistStore";
 import { useCartStore } from "@/store/CartStore";
@@ -21,9 +18,6 @@ export default function LogoutButton(): JSX.Element {
   // states
   const [message, setMessage] = React.useState<string>("");
   const [alert, setAlert] = React.useState<boolean>(false);
-
-  // auth hook
-  const apiWithAuth = useApiWithAuth();
 
   // router
   const router = useRouter();
@@ -35,10 +29,11 @@ export default function LogoutButton(): JSX.Element {
 
   async function handleLogout(event: React.FormEvent) {
     event.preventDefault();
-    const response: boolean = (await apiWithAuth(
-      UserAPI.logout
-    )) as unknown as boolean;
 
+    const token: string = localStorage.getItem("access_token") || "";
+    const response: boolean = await UserAPI.logout(token);
+
+    // Always remove local token
     localStorage.removeItem("access_token");
 
     if (!response) {
@@ -47,11 +42,12 @@ export default function LogoutButton(): JSX.Element {
       return;
     }
 
+    // Clear all stores
     clearWishlist();
     clearCart();
     clearCache();
     console.log("Logout success");
-    // router.push("/login");
+    router.push("/login");
   }
   return (
     <>

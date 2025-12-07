@@ -95,11 +95,16 @@ class UserAPI {
         },
       });
 
-      const data = await response.json();
-      console.log(data);
-
-      if (response.status !== 200) {
+      // Check if response is successful (200-299)
+      if (!response.ok) {
         return false;
+      }
+
+      // Only try to parse JSON if there's content
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const data = await response.json();
+        console.log(data);
       }
 
       return true;
