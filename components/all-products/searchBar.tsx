@@ -6,35 +6,24 @@ import { FiSearch } from "react-icons/fi";
 import { FiArrowLeft } from "react-icons/fi";
 import Link from "next/link";
 
-/**
- * A self-contained search bar component styled with Tailwind CSS.
- * It manages its own state and handles navigation internally.
- * The back button navigates to the previous page.
- * Submitting the search (by pressing Enter) navigates to a '/search' route
- * with the query.
- *
- * @param {object} props - The properties for the component.
- * @param {string} [props.placeholder='Search'] - The placeholder text for the search input.
- * @returns {JSX.Element} The rendered search bar component.
- */
 const SearchBar = ({ placeholder = "Search" }) => {
-  // 1. Internal state management for the input value
+  // Internal state management for the input value
   const [query, setQuery] = useState<string>("");
 
-  // 2. Next.js router for navigation
+  // Next.js router for navigation
   const router = useRouter();
 
-  // 3. Handle form submission
-  // const formatSearch = (event: React.FormEvent) => {
-  //   event.preventDefault(); // Prevent the default form submission (page reload)
-  //   if (!query.trim()) return;
-
-  //   // Navigate to a search results page with the query as a URL parameter
-  //   router.push(`/search?q=${encodeURIComponent(query)}`);
-  // };
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!query.trim()) return;
+    router.push(`/all-products?keyword=${query}`);
+  };
 
   return (
-    <div className="flex w-full items-center gap-3 p-2">
+    <form
+      onSubmit={(e: React.FormEvent<HTMLFormElement>) => handleSubmit(e)}
+      className="flex w-full items-center gap-3 p-2"
+    >
       {/* Back Arrow Button - now using FiArrowLeft */}
       <Link
         href={"/"}
@@ -55,14 +44,14 @@ const SearchBar = ({ placeholder = "Search" }) => {
           onChange={(e) => setQuery(e.target.value)}
         />
       </div>
-      <Link
-        href={`/all-products?keyword=${query}`}
-        type="button"
+      <button
+        // href={`/all-products?keyword=${query}`}
+        type="submit"
         className="bg-primary p-3 rounded-full"
       >
         <FiSearch />
-      </Link>
-    </div>
+      </button>
+    </form>
   );
 };
 

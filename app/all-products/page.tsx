@@ -40,7 +40,7 @@ export default async function ProductsPage({
             <SearchBar />
           </div>
         </header>
-        <div className="flex relative">
+        <div className="flex relative justify-between md:px-5">
           <CategorySidebar subCategories={categories} />
           <main className="flex w-3/4 ml-[25%] mt-15">
             <ProductGrid initialProducts={initialProducts as Product[]} />

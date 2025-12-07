@@ -2,7 +2,6 @@
 
 import React, { JSX } from "react";
 import Image from "next/image";
-import { FaRegHeart } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Spinner from "../utils/Spinner";
@@ -139,7 +138,7 @@ export default function ProductCard({
         className="absolute top-3 right-3 text-gray-400 hover:text-red-500 transition-colors z-10"
         aria-label="Toggle Wishlist"
       >
-        <FaRegHeart className="w-5 h-5" />
+        {/* <FaRegHeart className="w-5 h-5" /> */}
       </button>
 
       <div className="w-full aspect-square mb-2 cursor-pointer">

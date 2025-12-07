@@ -1,7 +1,7 @@
 // components/ProductGrid.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 
 import {
@@ -11,6 +11,8 @@ import {
 } from "@/app/all-products/actions";
 import InfiniteScroll from "react-infinite-scroll-component";
 import SpecialCard from "@/components/all-products/SpecialCard";
+import SkeletonCard from "@/components/all-products/SkeletonCard";
+import ErrorMessage from "@/components/all-products/ErrorMessage";
 
 // Types
 import type { Product } from "@/types/product";
@@ -25,6 +27,8 @@ type Cursor = {
 
 export default function ProductGrid({ initialProducts }: ProductGridProps) {
   const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const params = useSearchParams();
   // Getting category value from url params
@@ -41,10 +45,13 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
     return { serial_id: lastProduct.serial_id };
   });
 
-  useEffect(() => {
-    async function fetchCategoryOrProduct() {
-      // If category from query params exists, call this function and return the value
-      // console.log(category);
+  const fetchCategoryOrProduct = useCallback(async () => {
+    // If category from query params exists, call this function and return the value
+    // console.log(category);
+    setIsLoading(true);
+    setError(null);
+
+    try {
       if (category) {
         const categoryData: ProductCategory | null =
           await fetchProductByCategory(category);
@@ -66,12 +73,22 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
         setProducts(searchResult);
         return;
       }
-
-      return;
+    } catch (err) {
+      console.error("Error fetching products:", err);
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to load products. Please try again."
+      );
+      setProducts([]);
+    } finally {
+      setIsLoading(false);
     }
-
-    fetchCategoryOrProduct();
   }, [category, searchQuery]);
+
+  useEffect(() => {
+    fetchCategoryOrProduct();
+  }, [fetchCategoryOrProduct]);
 
   const [hasMore, setHasMore] = useState<boolean>(initialProducts.length > 0);
 
@@ -105,31 +122,51 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
   };
 
   return (
-    <InfiniteScroll
-      dataLength={products.length}
-      next={fetchMoreProducts}
-      hasMore={hasMore}
-      loader={<h4 className="text-center my-4">Loading...</h4>}
-      endMessage={
-        <p className="text-center my-4 text-primary">
-          <b>All caught!</b>
-        </p>
-      }
-      className="grid grid-cols-2 md:grid-cols-3 gap-2"
-    >
-      {products.map((product, index) => (
-        <SpecialCard
-          key={index}
-          id={product.id}
-          image={product.image}
-          name={product.name}
-          detail={product.detail}
-          price={product.price}
-          final_price={product.final_price}
-          discount_percentage={product.discount_percentage}
-          stock={product.stock}
-        />
-      ))}
-    </InfiniteScroll>
+    <div className="grid gap-2 w-full">
+      {/* Loading State */}
+      {isLoading && <SkeletonCard count={10} />}
+
+      {/* Error State */}
+      {!isLoading && error && (
+        <ErrorMessage message={error} onRetry={fetchCategoryOrProduct} />
+      )}
+
+      {/* Products Grid */}
+      {!isLoading && !error && (
+        <InfiniteScroll
+          dataLength={products.length}
+          next={fetchMoreProducts}
+          hasMore={hasMore}
+          loader={<SkeletonCard count={2} />}
+          endMessage={
+            <p className="text-center my-4 text-primary col-span-full">
+              <b>All caught!</b>
+            </p>
+          }
+          className="col-span-full grid grid-cols-2 md:grid-cols-3 gap-2"
+        >
+          {products.map((product, index) => (
+            <SpecialCard
+              key={index}
+              id={product.id}
+              image={product.image}
+              name={product.name}
+              detail={product.detail}
+              price={product.price}
+              final_price={product.final_price}
+              discount_percentage={product.discount_percentage}
+              stock={product.stock}
+            />
+          ))}
+        </InfiniteScroll>
+      )}
+
+      {/* Empty State */}
+      {!isLoading && !error && products.length === 0 && (
+        <div className="col-span-full text-center py-12 text-gray-500">
+          <p>No products found.</p>
+        </div>
+      )}
+    </div>
   );
 }
