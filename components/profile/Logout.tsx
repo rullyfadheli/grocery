@@ -13,6 +13,7 @@ import UserAPI from "@/lib/userAPI";
 import { useWishlistStore } from "@/store/WishlistStore";
 import { useCartStore } from "@/store/CartStore";
 import { useAddressStore } from "@/store/addressStore";
+import { useOrderStore } from "@/store/orderStore";
 
 export default function LogoutButton(): JSX.Element {
   // states
@@ -26,6 +27,7 @@ export default function LogoutButton(): JSX.Element {
   const { clearWishlist } = useWishlistStore();
   const { clearCart } = useCartStore();
   const { clearCache } = useAddressStore();
+  const { clearAll } = useOrderStore();
 
   async function handleLogout(event: React.FormEvent) {
     event.preventDefault();
@@ -46,6 +48,7 @@ export default function LogoutButton(): JSX.Element {
     clearWishlist();
     clearCart();
     clearCache();
+    clearAll();
     console.log("Logout success");
     router.push("/login");
   }
