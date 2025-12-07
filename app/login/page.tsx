@@ -26,7 +26,7 @@ export default async function HomePage(): Promise<JSX.Element> {
           <LoginForm />
           <p className="text-center text-sm mt-4">
             Didn't have an account?
-            <Link href="/signup" className="text-primary font-medium">
+            <Link href="/signup" className="text-primary font-medium px-1">
               Register
             </Link>
           </p>

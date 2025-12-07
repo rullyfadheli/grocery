@@ -1,46 +1,22 @@
 import React from "react";
 
+/**
+ * Modern, minimal loading animation with a pulsing spinner and text
+ */
 const LoadingAnimation = () => {
   return (
-    <>
-      <style>{`
-        @keyframes loading-wave-animation {
-          0% { height: 10px; }
-          50% { height: 50px; }
-          100% { height: 10px; }
-        }
-
-        .loading-bar {
-          animation: loading-wave-animation 1s ease-in-out infinite;
-        }
-
-        .loading-bar:nth-child(2) {
-          animation-delay: 0.1s;
-        }
-
-        .loading-bar:nth-child(3) {
-          animation-delay: 0.2s;
-        }
-
-        .loading-bar:nth-child(4) {
-          animation-delay: 0.3s;
-        }
-      `}</style>
-
-      <div className="fixed flex-col inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-secondary">
-        <div className="flex items-center justify-center w-[300px] h-[100px]">
-          {[...Array(4)].map((_, i) => (
-            <div
-              key={i}
-              className={`loading-bar w-5 h-[10px] mx-[5px] bg-primary rounded-md`}
-            />
-          ))}
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
+      <div className="flex flex-col items-center gap-4 bg-white/95 px-8 py-6 rounded-2xl shadow-xl">
+        {/* Modern Spinner */}
+        <div className="relative w-12 h-12">
+          <div className="absolute inset-0 rounded-full border-4 border-gray-200"></div>
+          <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-primary animate-spin"></div>
         </div>
-        <p className="text-secondary px-4 py-2 bg-primary rounded-xl">
-          Loading...{" "}
-        </p>
+
+        {/* Loading Text with subtle pulse */}
+        <p className="text-gray-600 font-medium animate-pulse">Loading...</p>
       </div>
-    </>
+    </div>
   );
 };
 
