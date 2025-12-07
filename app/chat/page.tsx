@@ -33,6 +33,9 @@ const SOCKET_SERVER_URL =
 const SERVER_URL: string =
   process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3001";
 
+// Chatbot sender ID from backend
+const CHATBOT_SENDER_ID = "00000000-0000-0000-0000-000000000000";
+
 /**
  * The main chat component that orchestrates the entire chat interface.
  * It manages socket connection, message state, and auto-scrolling.
@@ -59,7 +62,7 @@ const ChatPage = (): JSX.Element => {
         messageReceiver
       )) as Conversation[] | null;
 
-      console.log("API Response:", res);
+      // console.log("API Response:", res);
 
       if (!res || res.length === 0) {
         setAlertMessage("Failed to find conversation, please reload the page");
@@ -82,7 +85,7 @@ const ChatPage = (): JSX.Element => {
         };
       });
 
-      // (5) Set state dengan data yang sudah diformat
+      // Set state dengan data yang sudah diformat
       setMessages(formattedMessages);
       setConversationID(conversation.id.toString());
       return;
@@ -103,30 +106,38 @@ const ChatPage = (): JSX.Element => {
     socketRef.current = socketInstance;
 
     socketInstance.on("connect", () => {
-      console.log("connected");
+      // console.log("connected");
       socketInstance.emit(`joinConversation_${conversationID}`);
     });
 
     socketInstance.on("connection_error", async () => {
+      // console.log("Socket connection error, attempting to refresh token...");
+
       const res = await fetch(`${SERVER_URL}/api/token`, {
-        method: "POST",
+        method: "GET",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
       });
-      const data = (await res.json()) as unknown as Token;
-      console.log(data);
 
       if (res.status !== 200) {
         router.push("/login");
         return;
       }
 
+      const data = (await res.json()) as unknown as Token;
       const newToken = data[0].access_token as string;
-      token = newToken;
-    });
+      // console.log(newToken);
 
-    // Chatbot sender ID from backend
-    const CHATBOT_SENDER_ID = "00000000-0000-0000-0000-000000000000";
+      // Save new token to localStorage
+      localStorage.setItem("access_token", newToken);
+
+      // Disconnect and reconnect with new token
+      socketInstance.disconnect();
+      socketInstance.auth = { token: `Bearer ${newToken}` };
+      socketInstance.connect();
+
+      // console.log("Token refreshed successfully, reconnecting socket...");
+    });
 
     // Listen for incoming messages from the server
     socketInstance.on("receiveMessage", (message: any) => {
@@ -151,11 +162,9 @@ const ChatPage = (): JSX.Element => {
       setMessages((prevMessages) => [...prevMessages, formattedMessage]);
     });
 
-    // socketInstance.emit("joinConversation", conversationID);
-
     // Cleanup on component unmount
     return () => {
-      console.log("Disconnecting from socket server...");
+      // console.log("Disconnecting from socket server...");
       socketInstance.disconnect();
     };
   }, [conversationID, setMessages]);
