@@ -2,7 +2,7 @@ import React, { JSX } from "react";
 import Link from "next/link";
 
 // UI components
-import { SearchFilter } from "@/components/ui/SearchFilter";
+import { SearchProducts } from "@/components/home/SearchProducts";
 import { CategoryGrid } from "@/components/ui/CategoryGrid";
 import { PromoBanner } from "@/components/ui/PromoBanner";
 import { BestDeals } from "@/components/ui/BestDeals";
@@ -17,9 +17,9 @@ import type { Product } from "@/types/product";
 interface HomeViewProps {
   staticCategories: Category[];
 }
-interface SearchFilter {
-  onSortClick?: () => void;
-}
+// interface SearchProducts {
+//   onSortClick?: () => void;
+// }
 
 // API
 import ProductAPI from "@/lib/api";
@@ -40,7 +40,7 @@ export default async function HomeView({
           <HiOutlineShoppingBag className="w-7 h-7" />
         </Link>
       </header>
-      <SearchFilter />
+      <SearchProducts />
 
       <div className="space-y-8 mt-6">
         <CategoryGrid categories={staticCategories} />
